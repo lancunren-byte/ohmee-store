@@ -10,7 +10,7 @@ workflows:
     instance_type: mac_mini_m2
 
     environment:
-      node: 18
+      node: 22
       groups:
         - ohmee_env             # 包含 NOTIFY_EMAIL 等环境变量
       android_signing:
@@ -73,7 +73,7 @@ workflows:
       app_store_connect: ohmee_asc_key  # 在 Codemagic 控制台 → Integrations 中添加
 
     environment:
-      node: 18
+      node: 22
       xcode: latest
       cocoapods: default
       groups:
