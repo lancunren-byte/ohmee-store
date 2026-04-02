@@ -1,0 +1,44 @@
+# 依赖包（体积大，不提交）
+node_modules/
+venv/
+
+# 构建产物
+dist/
+
+# Capacitor 原生平台（由 CI 自动生成，不提交）
+android/
+ios/
+
+# 签名证书（安全敏感，绝对不能提交到 Git）
+*.keystore
+*.jks
+*.p12
+*.p8
+keystore.properties
+
+# 环境变量
+.env
+.env.local
+.env.production
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 数据库文件（本地测试用，生产数据库在服务器上）
+ohmee.db
+uploads/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
+npm-debug.log*

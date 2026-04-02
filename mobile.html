@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ohmee 移动端 · 原型图</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(145deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:32px 20px 48px;font-size:14px}
+h1{color:#fff;font-size:18px;font-weight:700;margin-bottom:8px;text-align:center;letter-spacing:.5px}
+.subtitle{color:rgba(255,255,255,.45);font-size:13px;text-align:center;margin-bottom:32px}
+.screen-nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:28px;max-width:800px}
+.nav-btn{padding:7px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);cursor:pointer;font-size:12px;transition:all .2s;font-family:inherit}
+.nav-btn:hover,.nav-btn.active{background:#e6232a;border-color:#e6232a;color:#fff;box-shadow:0 4px 12px rgba(230,35,42,.4)}
+.phone-frame{width:390px;background:#f5f6fa;border-radius:44px;overflow:hidden;box-shadow:0 48px 120px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06);position:relative;border:10px solid #111}
+.phone-status{height:44px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font-size:12px;font-weight:600;flex-shrink:0}
+.phone-screen{height:750px;overflow:hidden;position:relative;background:#f5f6fa}
+.screen{display:none;height:100%;overflow-y:auto;flex-direction:column}
+.screen.active{display:flex}
+/* Header */
+.gh{background:linear-gradient(145deg,#ff3b30 0%,#e6232a 55%,#a61010 100%);padding:14px 16px 28px;color:#fff;position:relative;overflow:hidden;flex-shrink:0}
+.gh::before{content:'';position:absolute;top:-36px;right:-24px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.08)}
+.gh::after{content:'';position:absolute;bottom:-50px;left:-16px;width:140px;height:140px;border-radius:50%;background:rgba(0,0,0,.06)}
+.gh-row{position:relative;display:flex;align-items:center;gap:8px}
+.back-btn{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;padding:4px 10px;cursor:pointer;font-size:14px;font-family:inherit}
+.gh h2{font-weight:800;font-size:16px;margin:0}
+.gh-sub{font-size:12px;opacity:.75;margin-top:3px;position:relative}
+/* White card (rounded top) */
+.wc{background:#fff;border-radius:20px 20px 0 0;margin-top:-14px;flex:1;overflow-y:auto}
+/* Tabbar */
+.tabbar{height:68px;background:#fff;box-shadow:0 -1px 0 rgba(0,0,0,.06),0 -8px 24px rgba(0,0,0,.05);display:flex;align-items:stretch;flex-shrink:0;padding:0 4px 4px}
+.ti{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:#b0b0b0;font-size:10px;font-weight:500;border-radius:12px;margin-top:4px}
+.ti.active{color:#e6232a;background:#fff1f0}
+.ti svg{width:22px;height:22px;flex-shrink:0;stroke:currentColor}
+/* Login */
+.emp-item{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid #f5f5f5;cursor:pointer;gap:12px}
+.emp-item:hover{background:#fff8f8}
+.emp-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:600;flex-shrink:0}
+/* 宫格卡片 */
+.mc{background:linear-gradient(145deg,#bf8484 0%,#b66d6f 55%,#ae606c 100%);border-radius:14px;padding:14px 6px 12px;cursor:pointer;box-shadow:0 5px 0 #9e6666,0 6px 18px rgba(182,109,111,.38),inset 0 1px 0 rgba(255,255,255,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:82px;position:relative;overflow:hidden;transition:transform .12s,box-shadow .12s}
+.mc:active{transform:translateY(4px);box-shadow:0 1px 0 #9e6666,0 2px 8px rgba(182,109,111,.28)}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:45%;background:linear-gradient(to bottom,rgba(255,255,255,.22),transparent);pointer-events:none;border-radius:14px 14px 0 0}
+.mc-badge{position:absolute;top:7px;right:7px;background:#fff;color:#e6232a;border-radius:9px;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;z-index:2;padding:0 3px;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.mc-lbl{font-size:12px;font-weight:700;color:#fff;line-height:1.2;text-align:center}
+.mc-sub{font-size:9px;color:rgba(255,255,255,.82);line-height:1.2;text-align:center}
+/* Calendar */
+.cal-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px;background:#fff}
+.cal-arr{width:32px;height:32px;border:none;background:#f5f6fa;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:#555}
+.wkdays{display:grid;grid-template-columns:repeat(7,1fr);padding:0 12px 6px;background:#fff}
+.wkd{text-align:center;font-size:11px;color:#ccc;padding:4px 0;font-weight:700}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:4px 12px 12px;background:#fff}
+.cd{border-radius:10px;padding:6px 2px 5px;text-align:center;cursor:pointer;min-height:52px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.cd .dn{font-size:14px;font-weight:600;line-height:1.2}
+.cd .ds{font-size:8px;font-weight:700;padding:2px 3px;border-radius:4px;white-space:nowrap}
+.cd .dot{width:5px;height:5px;border-radius:50%;margin-top:auto}
+.cd.today{background:#fff1f0;border:2px solid #e6232a}.cd.today .dn{color:#e6232a;font-weight:800}
+.cd.normal{background:#f0fdf4}.cd.normal .dn{color:#166534}.cd.normal .ds{background:#bbf7d0;color:#14532d}
+.cd.late{background:#fffbeb}.cd.late .dn{color:#92400e}.cd.late .ds{background:#fde68a;color:#78350f}
+.cd.absent{background:#fff1f0}.cd.absent .dn{color:#991b1b}.cd.absent .ds{background:#fecaca;color:#7f1d1d}
+.cd.sched{background:#e6f4ff}.cd.sched .dn{color:#0958d9}.cd.sched .ds{background:#bae0ff;color:#003eb3}
+.cd.empty{background:transparent;pointer-events:none}
+.cal-stats{display:flex;background:#fff;border-top:1px solid #f5f5f5;flex-shrink:0}
+.cs{flex:1;text-align:center;padding:10px 4px;border-right:1px solid #f5f5f5}
+.cs:last-child{border:none}
+.cs .n{font-size:18px;font-weight:800}
+.cs .l{font-size:11px;color:#bbb;margin-top:1px}
+/* Punch */
+.punch-circle{width:148px;height:148px;border-radius:50%;background:linear-gradient(145deg,#ff3b30,#e6232a 40%,#b01010);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff;cursor:pointer;box-shadow:0 16px 48px rgba(230,35,42,.5),0 4px 12px rgba(230,35,42,.3);transition:transform .15s;position:relative}
+.punch-circle::before{content:'';position:absolute;inset:-12px;border-radius:50%;border:2px solid rgba(230,35,42,.2);animation:pulse 2.2s ease-out infinite}
+.punch-circle::after{content:'';position:absolute;inset:-24px;border-radius:50%;border:1.5px solid rgba(230,35,42,.1);animation:pulse 2.2s ease-out .6s infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:1}100%{transform:scale(1.22);opacity:0}}
+.punch-circle:active{transform:scale(.93)}
+/* Schedule */
+.si{background:#fff;border-radius:14px;padding:12px 14px;margin:0 12px 8px;box-shadow:0 2px 10px rgba(0,0,0,.06);position:relative;overflow:hidden}
+.si::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#e6232a;border-radius:2px}
+.si.xfer::before{background:linear-gradient(to bottom,#fa8c16,#ffc53d)}
+/* Transfer */
+.tc{background:#fff;border-radius:14px;padding:14px 16px;margin:0 12px 8px;box-shadow:0 2px 10px rgba(0,0,0,.06);position:relative;overflow:hidden}
+.tc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:2px}
+.tc.pend::before{background:linear-gradient(to bottom,#faad14,#ffd666)}
+.tc.appr::before{background:linear-gradient(to bottom,#52c41a,#95de64)}
+.tc.rejt::before{background:linear-gradient(to bottom,#ff4d4f,#ffa39e)}
+/* Profile */
+.ph{background:linear-gradient(145deg,#ff3b30 0%,#e6232a 50%,#a61010 100%);padding:32px 24px 48px;text-align:center;color:#fff;position:relative;overflow:hidden;flex-shrink:0}
+.ph::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.07)}
+.ph::after{content:'';position:absolute;bottom:-60px;left:-30px;width:200px;height:200px;border-radius:50%;background:rgba(0,0,0,.06)}
+.pa{width:76px;height:76px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;border:3px solid rgba(255,255,255,.4);position:relative;z-index:1}
+.pn{font-size:20px;font-weight:800;position:relative;z-index:1}
+.pr{display:inline-block;background:rgba(255,255,255,.22);padding:3px 14px;border-radius:20px;font-size:12px;margin-top:8px;position:relative;z-index:1}
+.info-card{background:#fff;border-radius:18px;margin:0 14px;margin-top:-22px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.1);position:relative;z-index:1}
+.ir{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #f5f6fa}
+.ir:last-child{border:none}
+.il{color:#aaa;font-size:13px}
+.iv{color:#1a1a1a;font-size:13px;font-weight:600}
+/* Task */
+.task-card{background:#fff;border-radius:14px;padding:14px 16px;margin:0 12px 10px;box-shadow:0 2px 10px rgba(0,0,0,.07);border-left:4px solid #e6232a}
+.task-card.done{border-left-color:#52c41a;opacity:.7}
+/* Modal */
+.modal-ov{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
+.modal-ov.show{display:flex}
+.modal-sh{background:#fff;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 36px;max-height:88%;overflow-y:auto}
+/* Tabs */
+.m-tabs{display:flex;background:#fff;padding:0 14px;border-bottom:1px solid #f0f0f0;flex-shrink:0}
+.m-tab{flex:1;text-align:center;padding:12px 4px;font-size:13px;color:#bbb;cursor:pointer;border-bottom:2.5px solid transparent;font-weight:500}
+.m-tab.active{color:#e6232a;border-bottom-color:#e6232a;font-weight:700}
+/* Pills */
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.pg{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.po{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.pr2{background:#fff1f0;color:#cf1322;border:1px solid #fecaca}
+.py{background:#fffbe6;color:#d46b08;border:1px solid #ffd666}
+/* Form fields */
+.ff{margin-bottom:14px}
+.ff label{display:block;font-size:13px;color:#555;margin-bottom:6px;font-weight:600}
+.ff input,.ff select,.ff textarea{width:100%;padding:11px 13px;border:1.5px solid #ebebeb;border-radius:11px;font-size:13px;outline:none;font-family:inherit;background:#fafafa}
+.ff input:focus,.ff select:focus{border-color:#e6232a;background:#fff}
+.btn-red{width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,#ff4040,#e6232a);color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(230,35,42,.3)}
+/* Handover */
+.hc{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,.07);cursor:pointer;border-left:4px solid #52c41a}
+.hc.pend{border-left-color:#faad14}
+.hc.rejt{border-left-color:#ff4d4f}
+/* Search */
+.search-wrap{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e8e8e8;border-radius:10px;padding:7px 12px;margin-bottom:10px}
+</style>
+</head>
+<body>
+<h1>移动端原型图</h1>
+<p class="subtitle">Ohmee 排班打卡系统 · 移动端界面预览</p>
+<div class="screen-nav">
+<button class="nav-btn active" onclick="showScreen('login')">① 工号登录</button>
+<button class="nav-btn" onclick="showScreen('home')">② 功能首页</button>
+<button class="nav-btn" onclick="showScreen('calendar')">③ 打卡日历</button>
+<button class="nav-btn" onclick="showScreen('checkin')">④ 打卡界面</button>
+<button class="nav-btn" onclick="showScreen('camera')">⑤ 人脸拍照</button>
+<button class="nav-btn" onclick="showScreen('checkin-locating')">⑥ 位置验证</button>
+<button class="nav-btn" onclick="showScreen('checkin-done')">⑦ 打卡成功</button>
+<button class="nav-btn" onclick="showScreen('scheduling')">⑧ 排班·班次</button>
+<button class="nav-btn" onclick="showScreen('scheduling');switchSchedTab('staff')">⑨ 排班·人员</button>
+<button class="nav-btn" onclick="showScreen('shift-create')">⑩ 新建班次</button>
+<button class="nav-btn" onclick="showScreen('transfer-pending')">⑪ 借调审批</button>
+<button class="nav-btn" onclick="showScreen('transfer-init')">⑫ 发起借调</button>
+<button class="nav-btn" onclick="showScreen('dashboard')">⑬ 打卡看板</button>
+<button class="nav-btn" onclick="showScreen('tasklist')">⑭ 任务管理</button>
+<button class="nav-btn" onclick="showScreen('recruit')">⑮ 门店招聘</button>
+<button class="nav-btn" onclick="showScreen('profile')">⑯ 个人中心</button>
+<button class="nav-btn" onclick="showScreen('handover-list')">⑰ 交接班列表</button>
+<button class="nav-btn" onclick="showScreen('handover-form')">⑱ 新增交接班</button></div>
+<div class="phone-frame">
+  <div class="phone-status">
+    <span>9:41</span>
+    <span style="display:flex;align-items:center;gap:6px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/></svg>
+      <svg width="14" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+    </span>
+  </div>
+  <div class="phone-screen">
+
+    <div class="screen active" id="screen-login" style="background:#f5f5f5">
+      <div style="background:linear-gradient(135deg,#1677ff 0%,#0050b3 100%);padding:48px 24px 32px;text-align:center;color:#fff;flex-shrink:0">
+        <div style="width:60px;height:60px;background:rgba(255,255,255,.2);border-radius:18px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div style="font-size:22px;font-weight:700;margin-bottom:4px">Ohmee 排班打卡</div>
+        <div style="font-size:14px;opacity:.85">便利店门店排班与打卡管理系统</div>
+      </div>
+      <div style="background:#fff;border-radius:16px 16px 0 0;margin-top:-14px;flex:1;overflow-y:auto;padding:16px 12px 30px">
+        <div style="display:flex;align-items:center;gap:8px;background:#f5f5f5;border-radius:10px;padding:9px 14px;margin-bottom:12px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+          <span style="font-size:13px;color:#bbb">搜索姓名或工号</span>
+        </div>
+        <div style="font-size:12px;color:#999;margin-bottom:8px;padding-left:4px">请选择您的账号登录</div>
+        <div style="background:#fff;border-radius:12px;overflow:hidden;border:1px solid #f0f0f0">
+          <div class="emp-item" onclick="showScreen('home')">
+            <div class="emp-avatar" style="background:#13c2c2;font-size:14px">磊</div>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:14px">王磊</div>
+              <div style="font-size:12px;color:#999;margin-top:2px"><span style="background:#13c2c2;color:#fff;padding:1px 6px;border-radius:4px;margin-right:4px;font-size:11px">店长</span>上海南京路店</div>
+            </div>
+            <span style="font-size:12px;color:#e6232a;font-weight:500">登录</span>
+          </div>
+          <div class="emp-item" onclick="showScreen('home')">
+            <div class="emp-avatar" style="background:#52c41a">婷</div>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:14px">李婷</div>
+              <div style="font-size:12px;color:#999;margin-top:2px"><span style="background:#52c41a;color:#fff;padding:1px 6px;border-radius:4px;margin-right:4px;font-size:11px">全职店员</span>上海南京路店</div>
+            </div>
+            <span style="font-size:12px;color:#e6232a;font-weight:500">登录</span>
+          </div>
+          <div class="emp-item" onclick="showScreen('home')">
+            <div class="emp-avatar" style="background:#fa8c16;font-size:13px">晨</div>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:14px">张晨</div>
+              <div style="font-size:12px;color:#999;margin-top:2px"><span style="background:#fa8c16;color:#fff;padding:1px 6px;border-radius:4px;margin-right:4px;font-size:11px">管培生</span>上海南京路店</div>
+            </div>
+            <span style="font-size:12px;color:#e6232a;font-weight:500">登录</span>
+          </div>
+          <div class="emp-item" onclick="showScreen('home')">
+            <div class="emp-avatar" style="background:#722ed1;font-size:13px">导</div>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:14px">吴督导</div>
+              <div style="font-size:12px;color:#999;margin-top:2px"><span style="background:#722ed1;color:#fff;padding:1px 6px;border-radius:4px;margin-right:4px;font-size:11px">督导</span>上海片区</div>
+            </div>
+            <span style="font-size:12px;color:#e6232a;font-weight:500">登录</span>
+          </div>
+          <div class="emp-item" onclick="showScreen('home')" style="border:none">
+            <div class="emp-avatar" style="background:#eb2f96;font-size:13px">艳</div>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:14px">孙艳</div>
+              <div style="font-size:12px;color:#999;margin-top:2px"><span style="background:#eb2f96;color:#fff;padding:1px 6px;border-radius:4px;margin-right:4px;font-size:11px">兼职店员</span>上海南京路店</div>
+            </div>
+            <span style="font-size:12px;color:#e6232a;font-weight:500">登录</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-home" style="background:#f5f6fa">
+      <div class="gh">
+        <div style="position:relative;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:24px;font-weight:900;letter-spacing:.5px">王磊</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:5px">
+              <span style="background:rgba(255,255,255,.28);border-radius:6px;padding:2px 9px;font-size:12px;font-weight:700">店长</span>
+              <span style="font-size:11px;opacity:.65">EMP001 · 上海南京路店</span>
+            </div>
+          </div>
+          <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;border:2px solid rgba(255,255,255,.35)">王</div>
+        </div>
+        <div style="position:relative;display:flex;gap:6px;margin-top:12px">
+          <div style="flex:1;background:rgba(255,255,255,.14);border-radius:10px;padding:7px 4px;text-align:center">
+            <div style="font-size:17px;font-weight:800">1</div><div style="font-size:9px;opacity:.8;margin-top:1px">今日打卡</div>
+          </div>
+          <div style="flex:1;background:rgba(255,255,255,.14);border-radius:10px;padding:7px 4px;text-align:center">
+            <div style="font-size:17px;font-weight:800;color:#fde68a">2</div><div style="font-size:9px;opacity:.8;margin-top:1px">待审批</div>
+          </div>
+          <div style="flex:1;background:rgba(255,255,255,.14);border-radius:10px;padding:7px 4px;text-align:center">
+            <div style="font-size:17px;font-weight:800">24</div><div style="font-size:9px;opacity:.8;margin-top:1px">本月出勤</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:20px 20px 0 0;margin-top:-14px;flex:1;overflow-y:auto;padding:16px 14px 0">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font-size:14px;font-weight:800;color:#1a1a2e;letter-spacing:.2px">功能菜单</span>
+          <span style="font-size:11px;color:#bbb">8 项功能</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px"><div class="mc" onclick="showScreen('calendar')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><div class="mc-lbl">考勤管理</div><div class="mc-sub">打卡 · 看板</div></div><div class="mc" onclick="showScreen('scheduling')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="#fff" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="#fff" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="#fff" stroke="none"/></svg><div class="mc-lbl">排班管理</div><div class="mc-sub">班次 · 排班</div></div><div class="mc" onclick="showScreen('transfer-pending')"><div class="mc-badge">2</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><div class="mc-lbl">人员借调</div><div class="mc-sub">2 项待审批</div></div><div class="mc" onclick="showScreen('dashboard')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M6 16l4-5 4 3 4-6"/></svg><div class="mc-lbl">打卡看板</div><div class="mc-sub">考勤统计</div></div><div class="mc" onclick="showScreen('tasklist')"><div class="mc-badge">1</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div class="mc-lbl">任务管理</div><div class="mc-sub">1 项待完成</div></div><div class="mc" onclick="showScreen('handover-list')"><div class="mc-badge">1</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><div class="mc-lbl">交接班</div><div class="mc-sub">交班 · 审核</div></div><div class="mc" onclick="showScreen('recruit')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><div class="mc-lbl">门店招聘</div><div class="mc-sub">提报 · 跟进</div></div><div class="mc" onclick="showScreen('profile')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="mc-lbl">个人中心</div><div class="mc-sub">信息 · 设置</div></div></div>
+        <div style="margin-top:20px;padding-bottom:90px">
+          <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:10px">今日快捷</div>
+          <div onclick="showScreen('checkin')" style="background:#fff;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:8px;cursor:pointer;border:1.5px solid #fff1f0">
+            <div style="width:36px;height:36px;border-radius:10px;background:#fff1f0;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e6232a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600;color:#1a1a1a">立即打卡</div><div style="font-size:11px;color:#999;margin-top:1px">今日已排班，点击打卡</div></div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div onclick="showScreen('dashboard')" style="background:#fff;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.05);cursor:pointer">
+            <div style="width:36px;height:36px;border-radius:10px;background:#fff1f0;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e6232a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M6 16l4-5 4 3 4-6"/></svg>
+            </div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600;color:#1a1a1a">查看考勤看板</div><div style="font-size:11px;color:#999;margin-top:1px">本月出勤 24 天</div></div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="tabbar"><div class="ti active" onclick="showScreen('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></div><div class="ti" onclick="showScreen('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>打卡</span></div><div class="ti" onclick="showScreen('scheduling')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg><span>排班</span></div><div class="ti" onclick="showScreen('transfer-pending')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>借调</span></div><div class="ti" onclick="showScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>我的</span></div></div>
+    </div>
+
+    <div class="screen" id="screen-calendar" style="background:#f5f5f5">
+      <div class="gh">
+        <div class="gh-row" style="margin-bottom:4px">
+          <button class="back-btn" onclick="showScreen('home')">← 返回</button>
+          <h2>考勤打卡</h2>
+        </div>
+        <div class="gh-sub">王磊 · 上海南京路店</div>
+        <div style="position:relative;display:flex;gap:16px;margin-top:12px">
+          <div style="flex:1;text-align:center"><div style="font-size:20px;font-weight:700;color:#73d13d">24</div><div style="font-size:12px;opacity:.85">正常</div></div>
+          <div style="flex:1;text-align:center"><div style="font-size:20px;font-weight:700;color:#ffc53d">2</div><div style="font-size:12px;opacity:.85">迟到</div></div>
+          <div style="flex:1;text-align:center"><div style="font-size:20px;font-weight:700;color:#ff9c6e">0</div><div style="font-size:12px;opacity:.85">早退</div></div>
+          <div style="flex:1;text-align:center"><div style="font-size:20px;font-weight:700;color:#ff7875">1</div><div style="font-size:12px;opacity:.85">缺勤</div></div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:16px 16px 0 0;margin-top:-12px;flex:1;overflow-y:auto;padding-bottom:80px">
+        <div class="cal-hd">
+          <button class="cal-arr">‹</button>
+          <span style="font-weight:700;font-size:16px">2026年 3月</span>
+          <button class="cal-arr">›</button>
+        </div>
+        <div class="wkdays"><div class="wkd">日</div><div class="wkd">一</div><div class="wkd">二</div><div class="wkd">三</div><div class="wkd">四</div><div class="wkd">五</div><div class="wkd">六</div></div>
+        <div class="cal-grid">
+          <div class="cd empty"></div>
+          <div class="cd normal"><span class="dn">1</span><span class="ds">早班</span></div>
+          <div class="cd normal"><span class="dn">2</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd late"><span class="dn">3</span><span class="ds">迟到</span><span class="dot" style="background:#faad14"></span></div>
+          <div class="cd normal"><span class="dn">4</span><span class="ds">中班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">5</span><span class="ds">中班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd absent"><span class="dn">6</span><span class="ds">缺勤</span><span class="dot" style="background:#ff4d4f"></span></div>
+          <div class="cd normal"><span class="dn">7</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">8</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">9</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd late"><span class="dn">10</span><span class="ds">迟到</span><span class="dot" style="background:#faad14"></span></div>
+          <div class="cd normal"><span class="dn">11</span><span class="ds">中班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">12</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">13</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">14</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">15</span><span class="ds">中班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">16</span><span class="ds">中班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">17</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">18</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">19</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">20</span><span class="ds">中班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">21</span><span class="ds">中班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">22</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">23</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">24</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">25</span><span class="ds">中班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">26</span><span class="ds">中班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd normal"><span class="dn">27</span><span class="ds">早班</span><span class="dot" style="background:#52c41a"></span></div>
+          <div class="cd today" onclick="showScreen('checkin')"><span class="dn">28</span><span class="ds">早班</span></div>
+          <div class="cd sched"><span class="dn">29</span><span class="ds">早班</span></div>
+          <div class="cd sched"><span class="dn">30</span><span class="ds">中班</span></div>
+          <div class="cd sched"><span class="dn">31</span><span class="ds">中班</span></div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;padding:10px 16px">
+          <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:50%;background:#1677ff"></div><span style="font-size:12px;color:#666">已排班</span></div>
+          <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:50%;background:#52c41a"></div><span style="font-size:12px;color:#666">正常</span></div>
+          <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:50%;background:#faad14"></div><span style="font-size:12px;color:#666">迟到/早退</span></div>
+          <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:50%;background:#ff4d4f"></div><span style="font-size:12px;color:#666">缺勤</span></div>
+        </div>
+      </div>
+      <div style="background:#fff;padding:10px 14px;border-top:1px solid #f0f0f0;flex-shrink:0">
+        <button onclick="showScreen('checkin')" style="width:100%;padding:13px;border-radius:13px;background:linear-gradient(135deg,#ff3b30,#e6232a);color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(230,35,42,.35)">📍 立即打卡</button>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-checkin" style="background:#f5f6fa">
+      <div class="gh">
+        <div class="gh-row"><button class="back-btn" onclick="showScreen('calendar')">← 返回</button><h2>打卡</h2></div>
+      </div>
+      <div class="wc" style="padding:0 0 80px">
+        <div style="background:#fff;border-radius:14px;padding:14px 16px;margin:14px 12px 0;box-shadow:0 2px 10px rgba(0,0,0,.06)">
+          <div style="font-size:12px;color:#aaa;margin-bottom:3px">今日班次</div>
+          <div style="font-size:16px;font-weight:700;color:#1a1a1a">早班 07:00 - 15:00</div>
+          <div style="font-size:12px;color:#e6232a;margin-top:3px">上班打卡截止：07:30</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;padding:36px 16px 28px">
+          <div style="font-size:28px;font-weight:800;color:#e6232a;letter-spacing:1px;margin-bottom:12px" id="live-time">09:41:00</div>
+          <div class="punch-circle" onclick="showScreen('camera')">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span style="font-size:15px;font-weight:700;letter-spacing:.5px">上班打卡</span>
+          </div>
+          <div style="margin-top:22px;color:#666;font-size:13px;text-align:center;line-height:1.9">
+            <div>📍 上海市静安区南京西路688号</div>
+            <div style="color:#52c41a;font-size:12px;margin-top:2px">✓ 距门店 32m，在范围内</div>
+            <div style="color:#e6232a;font-size:12px;margin-top:6px;background:#fff1f0;border-radius:20px;padding:5px 16px;display:inline-block">⚠ 已超出打卡时间，将记为迟到</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-camera" style="background:#0a0a0a">
+      <div style="background:#111;padding:14px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <button style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:8px;padding:4px 10px;cursor:pointer;font-size:14px" onclick="showScreen('checkin')">← 返回</button>
+        <span style="font-weight:700;font-size:16px;color:#fff">人脸拍照</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px">
+        <div style="width:100%;height:300px;background:#1a1a1a;border-radius:16px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+          <div style="width:170px;height:210px;border:2px solid rgba(255,255,255,.6);border-radius:85px;position:relative">
+            <div style="position:absolute;inset:-8px;border:1px dashed rgba(255,255,255,.3);border-radius:93px"></div>
+          </div>
+          <div style="position:absolute;bottom:14px;left:0;right:0;text-align:center;color:rgba(255,255,255,.7);font-size:13px">将面部置于框内，正面朝前</div>
+        </div>
+        <div style="width:68px;height:68px;border-radius:50%;background:#fff;border:4px solid rgba(255,255,255,.4);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5)" onclick="showScreen('checkin-locating')">
+          <div style="width:52px;height:52px;border-radius:50%;background:#e6232a"></div>
+        </div>
+        <span style="color:rgba(255,255,255,.5);font-size:13px">点击拍照</span>
+      </div>
+      <div style="display:flex;justify-content:center;gap:24px;padding:16px;background:#111;flex-shrink:0">
+        <button style="background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:10px;padding:10px 28px;cursor:pointer;font-size:14px" onclick="showScreen('checkin')">取消</button>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-checkin-locating" style="background:#fff">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px">
+        <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#e6f4ff,#bae0ff);display:flex;align-items:center;justify-content:center">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1677ff" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"/></svg>
+        </div>
+        <div style="font-size:18px;font-weight:700;color:#1a1a1a">正在验证位置</div>
+        <div style="font-size:13px;color:#999;text-align:center;line-height:1.7">正在获取您的位置信息...<br>验证与门店的距离</div>
+        <div style="font-size:13px;color:#aaa">请稍候</div>
+        <div style="display:flex;gap:5px;margin-top:8px">
+          <div style="width:8px;height:8px;border-radius:50%;background:#1677ff;animation:pulse 1.4s ease-in-out infinite"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#1677ff;animation:pulse 1.4s ease-in-out .2s infinite;opacity:.6"></div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#1677ff;animation:pulse 1.4s ease-in-out .4s infinite;opacity:.3"></div>
+        </div>
+      </div>
+      <div style="padding:0 20px 40px">
+        <button onclick="showScreen('checkin-done')" style="width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,#52c41a,#389e0d);color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(82,196,26,.4)">模拟：定位成功，提交打卡</button>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-checkin-done" style="background:#fff">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px">
+        <div style="width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#52c41a,#389e0d);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(82,196,26,.4)">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="font-size:24px;font-weight:800;color:#1a1a1a">打卡成功！</div>
+        <div style="background:#f6ffed;border-radius:16px;padding:20px 24px;width:100%;max-width:300px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="color:#666;font-size:13px">打卡时间</span><span style="font-weight:700">09:41:22</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="color:#666;font-size:13px">打卡类型</span><span style="font-weight:700;color:#e6232a">上班打卡 <span style="color:#faad14;font-size:12px">（迟到）</span></span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="color:#666;font-size:13px">当前班次</span><span style="font-weight:700">早班 07:00-15:00</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:#666;font-size:13px">定位距离</span><span style="font-weight:700;color:#52c41a">32m ✓</span></div>
+        </div>
+        <button onclick="showScreen('calendar')" style="padding:12px 40px;border-radius:12px;background:#f5f6fa;color:#666;border:none;font-size:14px;cursor:pointer">返回考勤记录</button>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-scheduling" style="background:#f5f6fa">
+      <div class="gh">
+        <div class="gh-row"><button class="back-btn" onclick="showScreen('home')">← 返回</button><h2>排班管理</h2></div>
+        <div class="gh-sub">上海南京路店 · 班次配置与人员排班</div>
+      </div>
+      <div class="m-tabs">
+        <div class="m-tab active" id="sched-tab-shift" onclick="switchSchedTab('shift')">班次管理</div>
+        <div class="m-tab" id="sched-tab-staff" onclick="switchSchedTab('staff')">人员排班</div>
+      </div>
+      <div class="wc" style="border-radius:0;margin-top:0;padding-bottom:80px" id="sched-panel-shift">
+        <div style="padding:12px 12px 0;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:13px;color:#666">共 3 个班次，左滑删除</span>
+          <button onclick="showScreen('shift-create')" style="padding:5px 13px;border-radius:8px;background:#e6232a;color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer">+ 新建班次</button>
+        </div>
+        <div class="si" style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-left:8px">
+            <div><div style="font-weight:700;font-size:15px;color:#1a1a1a">早班</div><div style="font-size:13px;color:#e6232a;margin-top:2px;font-weight:500">07:00 - 15:00</div><div style="font-size:12px;color:#aaa;margin-top:1px">早·上海南京路店</div></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span style="background:#f6ffed;color:#389e0d;border-radius:8px;padding:2px 10px;font-size:12px">启用</span>
+              <button style="background:#fff1f0;color:#e6232a;border:none;border-radius:6px;padding:4px 8px;font-size:12px;cursor:pointer">编辑</button>
+            </div>
+          </div>
+        </div>
+        <div class="si">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-left:8px">
+            <div><div style="font-weight:700;font-size:15px;color:#1a1a1a">中班</div><div style="font-size:13px;color:#e6232a;margin-top:2px;font-weight:500">15:00 - 23:00</div><div style="font-size:12px;color:#aaa;margin-top:1px">中·上海南京路店</div></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span style="background:#f6ffed;color:#389e0d;border-radius:8px;padding:2px 10px;font-size:12px">启用</span>
+              <button style="background:#fff1f0;color:#e6232a;border:none;border-radius:6px;padding:4px 8px;font-size:12px;cursor:pointer">编辑</button>
+            </div>
+          </div>
+        </div>
+        <div class="si">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-left:8px">
+            <div><div style="font-weight:700;font-size:15px;color:#1a1a1a">大夜班</div><div style="font-size:13px;color:#e6232a;margin-top:2px;font-weight:500">23:00 - 07:00</div><div style="font-size:12px;color:#aaa;margin-top:1px">大夜·上海南京路店</div></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span style="background:#f6ffed;color:#389e0d;border-radius:8px;padding:2px 10px;font-size:12px">启用</span>
+              <button style="background:#fff1f0;color:#e6232a;border:none;border-radius:6px;padding:4px 8px;font-size:12px;cursor:pointer">编辑</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wc" style="border-radius:0;margin-top:0;padding-bottom:80px;display:none" id="sched-panel-staff">
+        <div style="padding:12px 12px 0;display:flex;justify-content:flex-end">
+          <button style="padding:5px 13px;border-radius:8px;background:#e6232a;color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer">+ 添加排班</button>
+        </div>
+        <div class="si" style="margin-top:10px">
+          <div style="padding-left:8px"><div style="font-weight:700;font-size:15px;color:#1a1a1a">王磊 <span style="font-size:11px;font-weight:400;color:#aaa">店长</span></div><div style="font-size:13px;color:#e6232a;margin-top:2px">早班 07:00-15:00</div><div style="font-size:12px;color:#aaa;margin-top:2px">2026-03-01 → 2026-03-31</div></div>
+        </div>
+        <div class="si">
+          <div style="padding-left:8px"><div style="font-weight:700;font-size:15px;color:#1a1a1a">李婷 <span style="font-size:11px;font-weight:400;color:#aaa">全职店员</span></div><div style="font-size:13px;color:#e6232a;margin-top:2px">中班 15:00-23:00</div><div style="font-size:12px;color:#aaa;margin-top:2px">2026-03-01 → 2026-03-31</div></div>
+        </div>
+        <div class="si xfer">
+          <div style="padding-left:8px"><div style="font-weight:700;font-size:15px;color:#1a1a1a">张晨 <span style="background:#fff7e6;color:#d46b08;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:600">借调中</span></div><div style="font-size:13px;color:#fa8c16;margin-top:2px">早班 07:00-15:00</div><div style="font-size:12px;color:#aaa;margin-top:2px">SH002 → SH001 借调</div></div>
+        </div>
+        <div class="si">
+          <div style="padding-left:8px"><div style="font-weight:700;font-size:15px;color:#1a1a1a">孙艳 <span style="font-size:11px;font-weight:400;color:#aaa">兼职店员</span></div><div style="font-size:13px;color:#e6232a;margin-top:2px">大夜 23:00-07:00</div><div style="font-size:12px;color:#aaa;margin-top:2px">2026-03-01 → 2026-03-31</div></div>
+        </div>
+      </div>
+      <div class="tabbar"><div class="ti" onclick="showScreen('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></div><div class="ti" onclick="showScreen('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>打卡</span></div><div class="ti active" onclick="showScreen('scheduling')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg><span>排班</span></div><div class="ti" onclick="showScreen('transfer-pending')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>借调</span></div><div class="ti" onclick="showScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>我的</span></div></div>
+    </div>
+
+    <div class="screen" id="screen-shift-create" style="background:#f5f6fa">
+      <div class="gh">
+        <div class="gh-row"><button class="back-btn" onclick="showScreen('scheduling')">← 返回</button><h2>新建班次</h2></div>
+      </div>
+      <div class="wc" style="padding:18px 16px 90px">
+        <div class="ff"><label>班次名称 <span style="color:#e6232a">*</span></label><input placeholder="如：早班·南京路"></div>
+        <div class="ff"><label>班次类型</label><select><option>早班</option><option>中班</option><option>晚班</option><option>大夜班</option><option>分割班</option></select></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+          <div class="ff" style="margin:0"><label>上班时间</label><input type="time" value="07:00"></div>
+          <div class="ff" style="margin:0"><label>下班时间</label><input type="time" value="15:00"></div>
+        </div>
+        <div style="background:#fffbe6;border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:12px;color:#d46b08">💡 跨夜班次（如23:00-07:00）系统自动识别</div>
+        <div class="ff"><label>状态</label>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <button style="padding:7px 20px;border-radius:20px;border:1.5px solid #e6232a;background:#fff1f0;color:#e6232a;font-size:13px;font-weight:700;cursor:pointer">立即启用</button>
+            <button style="padding:7px 20px;border-radius:20px;border:1.5px solid #e0e0e0;background:#fafafa;color:#666;font-size:13px;cursor:pointer">暂不启用</button>
+          </div>
+        </div>
+        <button class="btn-red" onclick="showScreen('scheduling')" style="margin-top:8px">保存班次</button>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-transfer-pending" style="background:#f5f6fa">
+      <div class="gh">
+        <div class="gh-row"><button class="back-btn" onclick="showScreen('home')">← 返回</button><h2>人员借调</h2></div>
+        <div class="gh-sub">借调申请管理 · 上海南京路店</div>
+      </div>
+      <div class="m-tabs">
+        <div class="m-tab active">待审批 <span style="background:#e6232a;color:#fff;border-radius:9px;padding:1px 6px;font-size:10px;margin-left:3px">1</span></div>
+        <div class="m-tab">我发起的</div>
+        <div class="m-tab">全部记录</div>
+      </div>
+      <div class="wc" style="border-radius:0;margin-top:0;padding-bottom:80px">
+        <div style="padding:12px 12px 0;display:flex;justify-content:flex-end">
+          <button onclick="showScreen('transfer-init')" style="padding:5px 13px;border-radius:8px;background:#e6232a;color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer">+ 发起借调</button>
+        </div>
+        <!-- 待审批 -->
+        <div class="tc pend" style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-left:8px;margin-bottom:8px">
+            <div><div style="font-weight:700;font-size:15px">张晨</div><div style="font-size:12px;color:#999;margin-top:2px">全职店员 · EMP006</div></div>
+            <span class="pill py">待审批</span>
+          </div>
+          <div style="font-size:13px;color:#555;padding-left:8px;line-height:1.9">
+            <div>📤 借出：上海徐汇店 → 上海南京路店</div>
+            <div>📅 2026-03-01 至 2026-03-15</div>
+            <div>📝 南京路店缺人手，需支援春节旺季</div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <button style="flex:1;padding:10px;border-radius:10px;background:linear-gradient(135deg,#52c41a,#389e0d);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer">✓ 批准</button>
+            <button style="flex:1;padding:10px;border-radius:10px;background:#fff5f5;color:#ff4d4f;border:1.5px solid #ffa39e;font-size:13px;font-weight:600;cursor:pointer">✗ 拒绝</button>
+          </div>
+        </div>
+        <!-- 已批准 -->
+        <div class="tc appr">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-left:8px;margin-bottom:8px">
+            <div><div style="font-weight:700;font-size:15px">李明</div><div style="font-size:12px;color:#999;margin-top:2px">管培生 · EMP009</div></div>
+            <span class="pill pg">已批准 · 借调中</span>
+          </div>
+          <div style="font-size:13px;color:#555;padding-left:8px;line-height:1.9">
+            <div>📤 借出：上海浦东店 → 上海南京路店</div>
+            <div>📅 2026-02-15 至 2026-02-28</div>
+          </div>
+        </div>
+      </div>
+      <div class="tabbar"><div class="ti" onclick="showScreen('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></div><div class="ti" onclick="showScreen('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>打卡</span></div><div class="ti" onclick="showScreen('scheduling')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg><span>排班</span></div><div class="ti active" onclick="showScreen('transfer-pending')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>借调</span></div><div class="ti" onclick="showScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>我的</span></div></div>
+    </div>
+
+    <div class="screen" id="screen-transfer-init" style="background:#f5f6fa">
+      <div class="gh">
+        <div class="gh-row"><button class="back-btn" onclick="showScreen('transfer-pending')">← 返回</button><h2>发起借调申请</h2></div>
+      </div>
+      <div class="wc" style="padding:18px 16px 90px">
+        <div class="ff"><label>借调门店（借入）</label>
+          <select><option>上海南京路店（当前）</option><option>上海徐汇店</option><option>上海浦东店</option></select>
+        </div>
+        <div class="ff"><label>借调员工 <span style="color:#e6232a">*</span></label>
+          <select><option>请选择员工</option><option>李婷（全职店员）</option><option>张晨（全职店员）</option><option>孙艳（兼职店员）</option></select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+          <div class="ff" style="margin:0"><label>开始日期 <span style="color:#e6232a">*</span></label><input type="date"></div>
+          <div class="ff" style="margin:0"><label>结束日期 <span style="color:#e6232a">*</span></label><input type="date"></div>
+        </div>
+        <div class="ff"><label>借调原因 <span style="color:#e6232a">*</span></label><textarea rows="3" placeholder="请说明借调原因..."></textarea></div>
+        <div style="background:#fffbe6;border-radius:8px;padding:10px 14px;margin-bottom:20px;font-size:12px;color:#d46b08">💡 提交后将通知借出门店店长审批</div>
+        <button class="btn-red" onclick="showScreen('transfer-pending')">提交申请</button>
+      </div>
+      <div class="tabbar"><div class="ti" onclick="showScreen('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></div><div class="ti" onclick="showScreen('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>打卡</span></div><div class="ti" onclick="showScreen('scheduling')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg><span>排班</span></div><div class="ti active" onclick="showScreen('transfer-pending')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>借调</span></div><div class="ti" onclick="showScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>我的</span></div></div>
+    </div>
+
+    <div class="screen" id="screen-dashboard" style="background:#f5f5f5">
+      <div class="gh">
+        <div class="gh-row"><button class="back-btn" onclick="showScreen('home')">← 返回</button><h2>打卡看板</h2></div>
+        <div class="gh-sub">上海南京路店 · 2026年3月</div>
+        <div style="position:relative;display:flex;gap:16px;margin-top:12px">
+          <div style="flex:1;text-align:center"><div style="font-size:20px;font-weight:700">28</div><div style="font-size:12px;opacity:.85">总打卡</div></div>
+          <div style="flex:1;text-align:center"><div style="font-size:20px;font-weight:700;color:#73d13d">24</div><div style="font-size:12px;opacity:.85">正常</div></div>
+          <div style="flex:1;text-align:center"><div style="font-size:20px;font-weight:700;color:#ff7875">3</div><div style="font-size:12px;opacity:.85">异常</div></div>
+          <div style="flex:1;text-align:center"><div style="font-size:20px;font-weight:700;color:#69b1ff">5</div><div style="font-size:12px;opacity:.85">员工数</div></div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:16px 16px 0 0;margin-top:-12px;flex:1;overflow-y:auto;padding:14px 0 80px">
+        <div style="display:flex;align-items:center;gap:8px;padding:0 14px 12px;border-bottom:1px solid #f5f5f5">
+          <span style="font-size:13px;color:#666">日期：</span>
+          <button style="padding:4px 12px;border-radius:8px;border:1.5px solid #e0e0e0;background:#fff;font-size:12px;cursor:pointer">03-01</button>
+          <span style="color:#aaa">—</span>
+          <button style="padding:4px 12px;border-radius:8px;border:1.5px solid #e0e0e0;background:#fff;font-size:12px;cursor:pointer">03-02</button>
+          <button style="padding:4px 10px;border-radius:8px;border:1.5px solid #e6232a;background:#fff1f0;font-size:12px;color:#e6232a;cursor:pointer;font-weight:600">本月</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:380px">
+            <thead><tr style="background:#f7f8fc">
+              <th style="padding:10px 8px;text-align:left;color:#888;font-weight:600;border-bottom:1px solid #f0f0f0;padding-left:16px">姓名</th>
+              <th style="padding:10px 8px;text-align:center;color:#888;font-weight:600;border-bottom:1px solid #f0f0f0">班次</th>
+              <th style="padding:10px 8px;text-align:center;color:#888;font-weight:600;border-bottom:1px solid #f0f0f0">应打</th>
+              <th style="padding:10px 8px;text-align:center;color:#888;font-weight:600;border-bottom:1px solid #f0f0f0">正常</th>
+              <th style="padding:10px 8px;text-align:center;color:#888;font-weight:600;border-bottom:1px solid #f0f0f0">异常</th>
+              <th style="padding:10px 8px;text-align:left;color:#888;font-weight:600;border-bottom:1px solid #f0f0f0">原因</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #f9f9f9"><td style="padding:12px 8px;padding-left:16px"><div style="font-weight:500">王磊</div><div style="font-size:11px;background:#13c2c2;color:#fff;border-radius:3px;padding:1px 4px;display:inline-block;margin-top:2px">店长</div></td><td style="padding:12px 8px;text-align:center;color:#666">07-15</td><td style="padding:12px 8px;text-align:center;font-weight:600">26</td><td style="padding:12px 8px;text-align:center;color:#52c41a;font-weight:600">24</td><td style="padding:12px 8px;text-align:center;color:#ff4d4f;font-weight:600">2</td><td style="padding:12px 8px"><span style="background:#fff1f0;color:#cf1322;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:600">迟到2次</span></td></tr>
+              <tr style="border-bottom:1px solid #f9f9f9"><td style="padding:12px 8px;padding-left:16px"><div style="font-weight:500">李婷</div><div style="font-size:11px;background:#52c41a;color:#fff;border-radius:3px;padding:1px 4px;display:inline-block;margin-top:2px">全职</div></td><td style="padding:12px 8px;text-align:center;color:#666">15-23</td><td style="padding:12px 8px;text-align:center;font-weight:600">26</td><td style="padding:12px 8px;text-align:center;color:#52c41a;font-weight:600">26</td><td style="padding:12px 8px;text-align:center;color:#999">0</td><td style="padding:12px 8px"><span style="color:#999;font-size:12px">-</span></td></tr>
+              <tr style="border-bottom:1px solid #f9f9f9"><td style="padding:12px 8px;padding-left:16px"><div style="font-weight:500">张晨</div><div style="font-size:11px;background:#fa8c16;color:#fff;border-radius:3px;padding:1px 4px;display:inline-block;margin-top:2px">借调</div></td><td style="padding:12px 8px;text-align:center;color:#666">07-15</td><td style="padding:12px 8px;text-align:center;font-weight:600">14</td><td style="padding:12px 8px;text-align:center;color:#52c41a;font-weight:600">13</td><td style="padding:12px 8px;text-align:center;color:#ff4d4f;font-weight:600">1</td><td style="padding:12px 8px"><span style="background:#fff1f0;color:#cf1322;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:600">缺勤1次</span></td></tr>
+              <tr style="border-bottom:1px solid #f9f9f9"><td style="padding:12px 8px;padding-left:16px"><div style="font-weight:500">孙艳</div><div style="font-size:11px;background:#eb2f96;color:#fff;border-radius:3px;padding:1px 4px;display:inline-block;margin-top:2px">兼职</div></td><td style="padding:12px 8px;text-align:center;color:#666">23-07</td><td style="padding:12px 8px;text-align:center;font-weight:600">16</td><td style="padding:12px 8px;text-align:center;color:#52c41a;font-weight:600">16</td><td style="padding:12px 8px;text-align:center;color:#999">0</td><td style="padding:12px 8px"><span style="color:#999;font-size:12px">-</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-tasklist" style="background:#f5f6fa">
+      <div class="gh">
+        <div class="gh-row"><button class="back-btn" onclick="showScreen('home')">← 返回</button><h2>任务管理</h2></div>
+        <div class="gh-sub">门店待完成巡检任务</div>
+      </div>
+      <div class="wc" style="padding:14px 12px 90px">
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+          <span style="background:#fff1f0;color:#e6232a;border-radius:20px;padding:4px 14px;font-size:12px;font-weight:600;cursor:pointer">待完成 1</span>
+          <span style="background:#f5f5f5;color:#666;border-radius:20px;padding:4px 14px;font-size:12px;cursor:pointer">已完成 5</span>
+          <span style="background:#f5f5f5;color:#666;border-radius:20px;padding:4px 14px;font-size:12px;cursor:pointer">全部</span>
+        </div>
+        <div class="task-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div style="font-size:14px;font-weight:700;color:#1a1a1a">门店卫生检查</div>
+            <span style="background:#fff1f0;color:#e6232a;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600;flex-shrink:0">紧急</span>
+          </div>
+          <div style="font-size:13px;color:#666;margin-bottom:8px;line-height:1.6">完成门店日常卫生清洁并拍照记录，包括收银台、货架、冷柜区域</div>
+          <div style="font-size:12px;color:#aaa;margin-bottom:12px">截止：2026-03-02 18:00 · 稽核专员指派</div>
+          <button style="width:100%;padding:10px;border-radius:10px;background:linear-gradient(135deg,#52c41a,#389e0d);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer">✓ 提交完成</button>
+        </div>
+        <div class="task-card done">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+            <div style="font-size:14px;font-weight:700;color:#1a1a1a">商品陈列检查</div>
+            <span style="background:#f6ffed;color:#389e0d;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600">已完成</span>
+          </div>
+          <div style="font-size:12px;color:#aaa">完成时间：2026-03-01 15:32 · 合格率：97%</div>
+        </div>
+        <div class="task-card done">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+            <div style="font-size:14px;font-weight:700;color:#1a1a1a">冷柜温度记录</div>
+            <span style="background:#f6ffed;color:#389e0d;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600">已完成</span>
+          </div>
+          <div style="font-size:12px;color:#aaa">完成时间：2026-03-01 09:10 · 合格率：100%</div>
+        </div>
+      </div>
+      <div class="tabbar"><div class="ti active" onclick="showScreen('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></div><div class="ti" onclick="showScreen('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>打卡</span></div><div class="ti" onclick="showScreen('scheduling')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg><span>排班</span></div><div class="ti" onclick="showScreen('transfer-pending')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>借调</span></div><div class="ti" onclick="showScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>我的</span></div></div>
+    </div>
+
+    <div class="screen" id="screen-recruit" style="background:#f5f6fa">
+      <div class="gh">
+        <div class="gh-row"><button class="back-btn" onclick="showScreen('home')">← 返回</button><h2>门店招聘</h2></div>
+        <div class="gh-sub">应聘人员提报与进度跟进</div>
+      </div>
+      <div class="wc" style="padding:14px 12px 90px">
+        <button style="width:100%;padding:12px;border-radius:12px;background:linear-gradient(135deg,#ff6060,#e6232a);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(230,35,42,.3);margin-bottom:14px">+ 提报新应聘人员</button>
+        <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+            <div style="font-size:14px;font-weight:700;color:#1a1a1a">张伟</div>
+            <span class="pill py">已提报</span>
+          </div>
+          <div style="font-size:12px;color:#888;line-height:1.8">全职 · 店员岗 · 提报：2026-02-28 · 联系：138****8888</div>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+            <div style="font-size:14px;font-weight:700;color:#1a1a1a">刘慧</div>
+            <span class="pill pg">已录用</span>
+          </div>
+          <div style="font-size:12px;color:#888;line-height:1.8">兼职 · 店员岗 · 提报：2026-02-20 · 入职：2026-03-01</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-profile" style="background:#f5f6fa">
+      <div class="ph">
+        <div class="pa" style="background:#e6232a">磊</div>
+        <div class="pn">王磊</div>
+        <div class="pr">店长</div>
+      </div>
+      <div class="info-card">
+        <div class="ir"><span class="il">工号</span><span class="iv">EMP001</span></div>
+        <div class="ir"><span class="il">所属门店</span><span class="iv">上海南京路店</span></div>
+        <div class="ir"><span class="il">门店编号</span><span class="iv">SH001</span></div>
+        <div class="ir"><span class="il">门店状态</span><span class="iv">正常营业</span></div>
+        <div class="ir"><span class="il">门店类型</span><span class="iv">直营店</span></div>
+      </div>
+      <div style="padding:16px 14px 80px">
+        <button style="width:100%;padding:13px;border-radius:12px;background:#fff;color:#ff4d4f;border:1.5px solid #ffa39e;font-size:14px;font-weight:600;cursor:pointer" onclick="showScreen('login')">退出登录</button>
+      </div>
+      <div class="tabbar"><div class="ti" onclick="showScreen('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></div><div class="ti" onclick="showScreen('calendar')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>打卡</span></div><div class="ti" onclick="showScreen('scheduling')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg><span>排班</span></div><div class="ti" onclick="showScreen('transfer-pending')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg><span>借调</span></div><div class="ti active" onclick="showScreen('profile')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>我的</span></div></div>
+    </div>
+
+    <div class="screen" id="screen-handover-list" style="background:#f5f6fa">
+      <div class="gh">
+        <div class="gh-row"><button class="back-btn" onclick="showScreen('home')">← 返回</button><h2>交接班</h2></div>
+        <div class="gh-sub">班次交接记录与审核</div>
+      </div>
+      <div class="wc" style="padding:14px 12px 90px">
+        <!-- 待审核提示 -->
+        <div style="background:#fffbe6;border:1px solid #ffd666;border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#d46b08;font-weight:600">⚠ 有 1 条记录待审核</div>
+        <button onclick="showScreen('handover-form')" style="width:100%;padding:12px;border-radius:12px;background:linear-gradient(135deg,#ff6060,#e6232a);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(230,35,42,.3);margin-bottom:14px">+ 新增交接班</button>
+        <!-- 查询筛选区 -->
+        <div style="background:#f9f9f9;border-radius:12px;padding:12px 12px 10px;margin-bottom:14px">
+          <div class="search-wrap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+            <span style="font-size:13px;color:#bbb">搜索交班人 / 接班人</span>
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:8px;align-items:center;flex-wrap:wrap">
+            <span style="font-size:11px;color:#aaa;width:28px">时间</span>
+            <button style="padding:4px 12px;border-radius:20px;border:1.5px solid #e0e0e0;background:#fff;color:#666;font-size:12px;cursor:pointer">全部</button>
+            <button style="padding:4px 12px;border-radius:20px;border:1.5px solid #e6232a;background:#fff1f0;color:#e6232a;font-size:12px;font-weight:700;cursor:pointer">本月</button>
+            <button style="padding:4px 12px;border-radius:20px;border:1.5px solid #e0e0e0;background:#fff;color:#666;font-size:12px;cursor:pointer">上月</button>
+            <button style="padding:4px 12px;border-radius:20px;border:1.5px solid #e0e0e0;background:#fff;color:#666;font-size:12px;cursor:pointer">近三月</button>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            <span style="font-size:11px;color:#aaa;width:28px">状态</span>
+            <button style="padding:4px 12px;border-radius:20px;border:1.5px solid #e0e0e0;background:#fff;color:#666;font-size:12px;cursor:pointer">全部</button>
+            <button style="padding:4px 10px;border-radius:20px;border:1.5px solid #e0e0e0;background:#fff;color:#d46b08;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:#faad14;display:inline-block"></span>待审核</button>
+            <button style="padding:4px 10px;border-radius:20px;border:1.5px solid #e0e0e0;background:#fff;color:#389e0d;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:#52c41a;display:inline-block"></span>已确认</button>
+            <button style="padding:4px 10px;border-radius:20px;border:1.5px solid #e0e0e0;background:#fff;color:#cf1322;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:#ff4d4f;display:inline-block"></span>已驳回</button>
+          </div>
+        </div>
+        <div style="font-size:12px;color:#aaa;margin-bottom:10px">共 2 条记录</div>
+        <!-- 待审核记录（置顶） -->
+        <div class="hc pend">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div style="font-weight:700;font-size:14px;color:#1a1a2e">周晓 → 孙艳、赵磊</div>
+              <div style="font-size:12px;color:#888;margin-top:3px">中班 15:00-23:00</div>
+              <div style="font-size:11px;color:#aaa;margin-top:2px">2026-03-01 23:05</div>
+            </div>
+            <span class="pill py" style="flex-shrink:0">待审核</span>
+          </div>
+          <div style="margin-top:8px;font-size:12px;color:#cf1322;background:#fff1f0;padding:4px 10px;border-radius:6px;display:inline-block">现金差异 ¥50</div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button style="flex:1;padding:8px;border-radius:8px;background:linear-gradient(135deg,#52c41a,#389e0d);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer">确认</button>
+            <button style="flex:1;padding:8px;border-radius:8px;background:#fff5f5;color:#ff4d4f;border:1.5px solid #ffa39e;font-size:13px;font-weight:600;cursor:pointer">驳回</button>
+          </div>
+        </div>
+        <!-- 已确认记录 -->
+        <div class="hc">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div style="font-weight:700;font-size:14px;color:#1a1a2e">刘洋 → 周晓</div>
+              <div style="font-size:12px;color:#888;margin-top:3px">早班 07:00-15:00</div>
+              <div style="font-size:11px;color:#aaa;margin-top:2px">2026-02-28 15:02</div>
+            </div>
+            <span class="pill pg" style="flex-shrink:0">已确认</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-handover-form" style="background:#f5f6fa">
+      <div class="gh">
+        <div class="gh-row"><button class="back-btn" onclick="showScreen('handover-list')">← 返回</button><h2>新增交接班</h2></div>
+      </div>
+      <div class="wc" style="padding:16px 14px 100px">
+        <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:10px;padding-left:8px;border-left:3px solid #e6232a">交班人信息</div>
+        <div style="background:#f9f9f9;border-radius:12px;padding:12px 14px;margin-bottom:16px">
+          <div style="font-size:14px;font-weight:700;color:#1a1a1a">王磊</div>
+          <div style="font-size:12px;color:#888;margin-top:4px">店长 · 早班 07:00-15:00</div>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:10px;padding-left:8px;border-left:3px solid #e6232a">接班人 <span style="color:#999;font-weight:400;font-size:11px">（可多选）</span></div>
+        <div style="margin-bottom:16px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1.5px solid #e6232a;border-radius:10px;background:#fff1f0;cursor:pointer">
+            <div><div style="font-size:14px;font-weight:700;color:#e6232a">周晓 ✓</div><div style="font-size:12px;color:#888;margin-top:2px">全职店员 · 中班 15:00-23:00</div></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1.5px solid #e0e0e0;border-radius:10px;background:#fff;cursor:pointer">
+            <div><div style="font-size:14px;font-weight:600;color:#333">孙艳</div><div style="font-size:12px;color:#888;margin-top:2px">兼职店员 · 中班</div></div>
+          </div>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:10px;padding-left:8px;border-left:3px solid #e6232a">现金情况</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="font-size:13px;color:#666;width:110px">现金是否有差异</span>
+          <button style="padding:5px 18px;border-radius:20px;border:1.5px solid #e6232a;background:#fff1f0;color:#e6232a;font-size:13px;font-weight:700;cursor:pointer">是</button>
+          <button style="padding:5px 18px;border-radius:20px;border:1.5px solid #e0e0e0;background:#fafafa;color:#666;font-size:13px;cursor:pointer">否</button>
+        </div>
+        <div style="margin-bottom:16px;padding:12px;background:#fff1f0;border-radius:10px">
+          <div class="ff" style="margin-bottom:8px"><label>差异金额（元）</label><input type="number" placeholder="请输入差异金额"></div>
+          <div class="ff" style="margin:0"><label>差异原因</label><input placeholder="请说明差异原因"></div>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:10px;padding-left:8px;border-left:3px solid #e6232a">现场照片</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+          <div style="text-align:center"><div style="height:70px;border-radius:8px;border:1.5px dashed #e0e0e0;background:#f9f9f9;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:3px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2l4-3h10l4 3a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:9px;color:#ccc">拍照</span></div><div style="font-size:10px;color:#888;margin-top:3px">门前卫生</div></div>
+          <div style="text-align:center"><div style="height:70px;border-radius:8px;border:1.5px dashed #e0e0e0;background:#f9f9f9;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:3px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2l4-3h10l4 3a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:9px;color:#ccc">拍照</span></div><div style="font-size:10px;color:#888;margin-top:3px">熟食区</div></div>
+          <div style="text-align:center"><div style="height:70px;border-radius:8px;border:1.5px solid #a5d6a7;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative"><span style="position:absolute;top:3px;right:4px;font-size:12px">✓</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#52c41a" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2l4-3h10l4 3a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div><div style="font-size:10px;color:#888;margin-top:3px">风幕柜</div></div>
+          <div style="text-align:center"><div style="height:70px;border-radius:8px;border:1.5px dashed #e0e0e0;background:#f9f9f9;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:3px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2l4-3h10l4 3a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:9px;color:#ccc">拍照</span></div><div style="font-size:10px;color:#888;margin-top:3px">水柜</div></div>
+          <div style="text-align:center"><div style="height:70px;border-radius:8px;border:1.5px dashed #e0e0e0;background:#f9f9f9;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:3px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2l4-3h10l4 3a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:9px;color:#ccc">拍照</span></div><div style="font-size:10px;color:#888;margin-top:3px">货架区</div></div>
+          <div style="text-align:center"><div style="height:70px;border-radius:8px;border:1.5px dashed #e0e0e0;background:#f9f9f9;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:3px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2l4-3h10l4 3a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:9px;color:#ccc">拍照</span></div><div style="font-size:10px;color:#888;margin-top:3px">仓库</div></div>
+        </div>
+        <div style="margin-bottom:20px"><div style="height:80px;border-radius:10px;border:1.5px dashed #e6232a;background:#fff1f0;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:4px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e6232a" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2l4-3h10l4 3a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:11px;color:#e6232a;font-weight:600">拍照 · 现金与交接单（必传）</span></div></div>
+        <button class="btn-red" onclick="showScreen('handover-list')">提交交接班</button>
+        <div style="text-align:center;font-size:12px;color:#aaa;margin-top:8px">提交后需店长审核确认</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  var el = document.getElementById('screen-' + name);
+  if (el) { el.classList.add('active'); el.scrollTop = 0; }
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  var matching = document.querySelectorAll('.nav-btn[onclick*="' + name + '"]');
+  if (matching.length) matching[0].classList.add('active');
+}
+
+function switchSchedTab(tab) {
+  var sp = document.getElementById('sched-panel-shift');
+  var ss = document.getElementById('sched-panel-staff');
+  var ts = document.getElementById('sched-tab-shift');
+  var ta = document.getElementById('sched-tab-staff');
+  if (!sp) return;
+  if (tab === 'shift') {
+    sp.style.display = 'flex'; ss.style.display = 'none';
+    ts.className = 'm-tab active'; ta.className = 'm-tab';
+  } else {
+    ss.style.display = 'flex'; sp.style.display = 'none';
+    ta.className = 'm-tab active'; ts.className = 'm-tab';
+  }
+}
+
+(function(){
+  function pad(n){return String(n).padStart(2,'0');}
+  function tick(){
+    var now = new Date();
+    var s = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+    var el = document.getElementById('live-time');
+    if (el) el.textContent = s;
+  }
+  tick(); setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+workflows:
+
+  # ══════════════════════════════════════════════════════════════
+  # Android Release APK 打包工作流
+  # 产出：签名的 release APK，可直接发给员工安装
+  # ══════════════════════════════════════════════════════════════
+  android-release:
+    name: Android Release APK
+    max_build_duration: 60
+    instance_type: linux_x2
+
+    environment:
+      node: 18
+      android_signing:
+        - ohmee_keystore        # 在 Codemagic 控制台 → Code signing → Android keystores 中上传
+      vars:
+        PACKAGE_NAME: com.ohmee.store
+
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
+        - node_modules
+
+    scripts:
+      - name: 安装前端依赖
+        script: npm ci
+
+      - name: 构建前端（APP 模式）
+        script: npm run build:app
+
+      - name: 初始化 Android 平台（首次）
+        script: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+
+      - name: 同步 Web 资产到 Android 项目
+        script: npx cap sync android
+
+      - name: 构建签名 Release APK
+        script: |
+          cd android
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=$CM_KEYSTORE_PATH \
+            -Pandroid.injected.signing.store.password=$CM_KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$CM_KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$CM_KEY_PASSWORD
+
+    artifacts:
+      - android/app/build/outputs/apk/release/app-release.apk
+
+    publishing:
+      email:
+        recipients:
+          - $NOTIFY_EMAIL        # 在 Codemagic 控制台环境变量中设置收件人
+        notify:
+          success: true
+          failure: true
+
+
+  # ══════════════════════════════════════════════════════════════
+  # iOS TestFlight 打包工作流
+  # 产出：上传至 TestFlight，员工通过 TestFlight APP 安装
+  # ══════════════════════════════════════════════════════════════
+  ios-testflight:
+    name: iOS TestFlight
+    max_build_duration: 90
+    instance_type: mac_mini_m2  # 云端 Mac，500分钟/月免费
+
+    integrations:
+      app_store_connect: ohmee_asc_key  # 在 Codemagic 控制台 → Integrations 中添加
+
+    environment:
+      node: 18
+      xcode: latest
+      cocoapods: default
+      ios_signing:
+        distribution_type: app_store    # 上传 TestFlight 用 app_store 类型
+        bundle_identifier: com.ohmee.store
+      vars:
+        BUNDLE_ID: com.ohmee.store
+        XCODE_WORKSPACE: ios/App/App.xcworkspace
+        XCODE_SCHEME: App
+
+    cache:
+      cache_paths:
+        - ~/.pub-cache
+        - node_modules
+        - ios/App/Pods
+
+    scripts:
+      - name: 安装前端依赖
+        script: npm ci
+
+      - name: 构建前端（APP 模式）
+        script: npm run build:app
+
+      - name: 初始化 iOS 平台（首次）
+        script: |
+          if [ ! -d "ios" ]; then
+            npx cap add ios
+          fi
+
+      - name: 同步 Web 资产到 iOS 项目
+        script: npx cap sync ios
+
+      - name: 补充 iOS 权限描述（Info.plist）
+        script: |
+          PLIST="ios/App/App/Info.plist"
+
+          # 相机权限
+          if ! /usr/libexec/PlistBuddy -c "Print :NSCameraUsageDescription" "$PLIST" 2>/dev/null; then
+            /usr/libexec/PlistBuddy -c \
+              "Add :NSCameraUsageDescription string 'Ohmee 巡店系统需要使用相机进行打卡人脸拍照验证'" \
+              "$PLIST"
+            echo "✅ 已添加相机权限"
+          fi
+
+          # 使用期间定位权限
+          if ! /usr/libexec/PlistBuddy -c "Print :NSLocationWhenInUseUsageDescription" "$PLIST" 2>/dev/null; then
+            /usr/libexec/PlistBuddy -c \
+              "Add :NSLocationWhenInUseUsageDescription string 'Ohmee 巡店系统需要获取您的位置，以验证您在门店 100 米范围内打卡'" \
+              "$PLIST"
+            echo "✅ 已添加定位权限"
+          fi
+
+          # 照片库权限（Capacitor Camera 需要声明，即使不允许从相册选取）
+          if ! /usr/libexec/PlistBuddy -c "Print :NSPhotoLibraryUsageDescription" "$PLIST" 2>/dev/null; then
+            /usr/libexec/PlistBuddy -c \
+              "Add :NSPhotoLibraryUsageDescription string 'Ohmee 巡店系统需要访问相册以保存打卡照片'" \
+              "$PLIST"
+            echo "✅ 已添加相册权限"
+          fi
+
+      - name: 安装 CocoaPods 依赖
+        script: |
+          cd ios/App
+          pod install --repo-update
+
+      - name: 配置代码签名
+        script: xcode-project use-profiles
+
+      - name: 构建 IPA 并上传 TestFlight
+        script: |
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration             # 使用上方配置的 ohmee_asc_key
+        submit_to_testflight: true
+        beta_groups:
+          - Ohmee Internal Testers   # TestFlight 内部测试组名称（在 App Store Connect 创建）
+      email:
+        recipients:
+          - $NOTIFY_EMAIL
+        notify:
+          success: true
+          failure: true

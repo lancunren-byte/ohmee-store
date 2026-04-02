@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ohmee 排班打卡系统 · 原型图</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#0a0e1a;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px}
+.logo{text-align:center;margin-bottom:48px}
+.logo-icon{width:64px;height:64px;background:linear-gradient(135deg,#1677ff,#0050b3);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px}
+.logo h1{color:#fff;font-size:28px;font-weight:700;letter-spacing:1px}
+.logo p{color:rgba(255,255,255,.5);margin-top:6px;font-size:14px}
+.cards{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;max-width:800px}
+.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:36px 40px;text-align:center;text-decoration:none;color:#fff;transition:all .25s;width:340px}
+.card:hover{background:rgba(22,119,255,.15);border-color:#1677ff;transform:translateY(-4px);box-shadow:0 20px 60px rgba(22,119,255,.25)}
+.card-icon{font-size:48px;margin-bottom:16px}
+.card h2{font-size:20px;font-weight:700;margin-bottom:8px}
+.card p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7}
+.card .badge{display:inline-flex;gap:6px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+.card .tag{background:rgba(22,119,255,.2);border:1px solid rgba(22,119,255,.4);color:#69b1ff;padding:3px 10px;border-radius:20px;font-size:12px}
+.card.mobile .badge .tag{background:rgba(82,196,26,.15);border-color:rgba(82,196,26,.4);color:#95de64}
+.footer{color:rgba(255,255,255,.3);font-size:12px;margin-top:48px;text-align:center}
+</style>
+</head>
+<body>
+<div class="logo">
+  <div class="logo-icon">🏪</div>
+  <h1>Ohmee 排班打卡系统</h1>
+  <p>原型设计文档 · v1.0 · 点击卡片进入对应原型</p>
+</div>
+<div class="cards">
+  <a class="card" href="pc.html">
+    <div class="card-icon">🖥️</div>
+    <h2>PC 管理端</h2>
+    <p>供总部运营管理员使用的后台系统，涵盖门店、员工、区域、班次类型的全量配置管理；支持按国家、公司进行数据区隔，时区自适应；权限管理含国家、公司、角色、用户四个子模块。</p>
+    <div class="badge">
+      <span class="tag">时区自适应</span>
+      <span class="tag">国家/公司选择</span>
+      <span class="tag">系统概览</span>
+      <span class="tag">区域管理</span>
+      <span class="tag">门店管理</span>
+      <span class="tag">员工管理</span>
+      <span class="tag">班次类型</span>
+      <span class="tag">权限管理</span>
+      <span class="tag">国家/公司/角色/用户</span>
+    </div>
+  </a>
+  <a class="card mobile" href="mobile.html">
+    <div class="card-icon">📱</div>
+    <h2>移动端</h2>
+    <p>供店长和一线员工使用的手机端，支持排班、人脸打卡（GPS验证）、借调审批及看板查询；时间按门店所在国家时区自动适配。</p>
+    <div class="badge">
+      <span class="tag">时区自适应</span>
+      <span class="tag">打卡日历</span>
+      <span class="tag">排班管理</span>
+      <span class="tag">人脸打卡</span>
+      <span class="tag">借调审批</span>
+      <span class="tag">打卡看板</span>
+    </div>
+  </a>
+</div>
+<div class="footer">Ohmee Product Team · 2026</div>
+</body>
+</html>
