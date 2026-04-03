@@ -1,14 +1,13 @@
 @echo off
 chcp 65001 >nul
 setlocal enabledelayedexpansion
-title Ohmee 一键发版工具
+title Ohmee Release Tool
 
 echo ============================================
-echo        Ohmee 一键发版工具
+echo        Ohmee Release Tool
 echo ============================================
 echo.
 
-:: 读取当前版本号（从 src/version.ts）
 set "VERSION_FILE=%~dp0src\version.ts"
 set "CURRENT_VERSION=1.0.0"
 set "CURRENT_BUILD=1"
@@ -27,86 +26,74 @@ for /f "usebackq tokens=*" %%a in ("%VERSION_FILE%") do (
     )
 )
 
-:: 解析版本号 MAJOR.MINOR.PATCH
 for /f "tokens=1,2,3 delims=." %%a in ("%CURRENT_VERSION%") do (
     set "MAJOR=%%a"
     set "MINOR=%%b"
     set "PATCH=%%c"
 )
 
-:: 自动递增
 set /a "NEW_PATCH=%PATCH% + 1"
 set /a "NEW_BUILD=%CURRENT_BUILD% + 1"
 set "NEW_VERSION=%MAJOR%.%MINOR%.%NEW_PATCH%"
 
-echo 当前版本：v%CURRENT_VERSION% ^(build %CURRENT_BUILD%^)
-echo 新版本：  v%NEW_VERSION% ^(build %NEW_BUILD%^)
+echo Current: v%CURRENT_VERSION% (build %CURRENT_BUILD%)
+echo New:     v%NEW_VERSION% (build %NEW_BUILD%)
 echo.
 
-:: 输入更新说明
-set "RELEASE_NOTES=优化体验，修复已知问题"
-set /p "RELEASE_NOTES=请输入本次更新说明（直接回车跳过）: "
+set "RELEASE_NOTES=Bug fixes and improvements"
+set /p "RELEASE_NOTES=Update notes (Enter to skip): "
 
 echo.
-echo 即将执行：
-echo   - 更新版本号: v%CURRENT_VERSION% -^> v%NEW_VERSION%
-echo   - 重新构建前端 dist/
-echo   - 提交并推送到 GitHub
-echo.
-set /p "CONFIRM=确认发版？(y/n): "
+set /p "CONFIRM=Confirm release? (y/n): "
 if /i not "%CONFIRM%"=="y" (
-    echo 已取消。
+    echo Cancelled.
     pause
     exit /b
 )
 
-:: 写入新版本号到 version.ts
 (
-echo /** 当前 APP 版本（每次发布新 APK 时递增） */
+echo /** APP version - auto managed by release script */
 echo export const APP_VERSION = '%NEW_VERSION%'
 echo export const APP_BUILD = %NEW_BUILD%
 ) > "%VERSION_FILE%"
 
 echo.
-echo [步骤 1/3] 版本号已更新为 v%NEW_VERSION% ^(build %NEW_BUILD%^)
+echo [1/3] Version updated: v%NEW_VERSION% (build %NEW_BUILD%)
 
-:: 构建前端
 echo.
-echo [步骤 2/3] 正在构建前端...
+echo [2/3] Building frontend...
 cd /d "%~dp0"
 call npm run build
 if errorlevel 1 (
-    echo 构建失败！请检查错误信息。
+    echo Build failed!
     pause
     exit /b 1
 )
-echo 构建完成！
+echo Build done!
 
-:: Git 提交推送
 echo.
-echo [步骤 3/3] 正在推送到 GitHub...
+echo [3/3] Pushing to GitHub...
 git add -A
-git commit -m "release: v%NEW_VERSION% - %RELEASE_NOTES%"
+git commit --trailer "Made-with: Cursor" -m "release: v%NEW_VERSION% - %RELEASE_NOTES%"
 git push origin main
 if errorlevel 1 (
-    echo 推送失败！请检查 Git 配置。
+    echo Push failed!
     pause
     exit /b 1
 )
 
 echo.
 echo ============================================
-echo   发版成功！v%NEW_VERSION% 已推送到 GitHub
+echo   Released: v%NEW_VERSION% pushed to GitHub
 echo ============================================
 echo.
-echo 后续步骤（等 Codemagic 构建完 APK 后）：
+echo Next steps after Codemagic builds the APK:
 echo.
-echo   A. 下载 APK，拖拽上传到 OrcaTerm
+echo  A. Download APK, drag to OrcaTerm to upload
 echo.
-echo   B. 服务器执行：
-echo      mv /root/app-release*.apk /opt/ohmee-store/uploads/apk/ohmee-latest.apk
+echo  B. On server: mv /root/app-release*.apk /opt/ohmee-store/uploads/apk/ohmee-latest.apk
 echo.
-echo   C. 更新服务器版本号（复制下面这行到 OrcaTerm）：
+echo  C. Update version on server (copy this line to OrcaTerm):
 echo.
 echo curl -X PUT https://ohmeesm.com/api/app-version -H "Content-Type: application/json" -d "{\"version\":\"%NEW_VERSION%\",\"build\":%NEW_BUILD%,\"force_update\":true,\"apk_url\":\"https://ohmeesm.com/apk/ohmee-latest.apk\",\"release_notes\":\"%RELEASE_NOTES%\"}"
 echo.
