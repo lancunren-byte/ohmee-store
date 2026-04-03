@@ -9,6 +9,9 @@ venv/
 android/
 ios/
 
+# APK 文件
+*.apk
+
 # 签名证书（安全敏感，绝对不能提交到 Git）
 *.keystore
 *.jks
