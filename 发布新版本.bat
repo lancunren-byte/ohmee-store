@@ -49,9 +49,9 @@ set /p "RELEASE_NOTES=请输入本次更新说明（直接回车跳过）: "
 
 echo.
 echo 即将执行：
-echo   - 更新版本号：v%CURRENT_VERSION% → v%NEW_VERSION%
+echo   - 更新版本号: v%CURRENT_VERSION% -^> v%NEW_VERSION%
 echo   - 重新构建前端 dist/
-echo   - 提交并推送到 GitHub（触发 Codemagic 构建 APK）
+echo   - 提交并推送到 GitHub
 echo.
 set /p "CONFIRM=确认发版？(y/n): "
 if /i not "%CONFIRM%"=="y" (
