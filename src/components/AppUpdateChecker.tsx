@@ -7,6 +7,8 @@ import React, { useEffect, useState } from 'react'
 import { Modal, Button } from 'antd-mobile'
 import { APP_VERSION, APP_BUILD } from '../version'
 
+const API_BASE = import.meta.env.VITE_API_URL || ''
+
 interface ServerVersion {
   version: string
   build: number
@@ -40,7 +42,7 @@ export default function AppUpdateChecker() {
 
     const check = async () => {
       try {
-        const res = await fetch('/api/app-version')
+        const res = await fetch(`${API_BASE}/api/app-version`)
         if (!res.ok) return
         const data: ServerVersion = await res.json()
         const isNewer =
