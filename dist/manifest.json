@@ -1,0 +1,26 @@
+{
+  "name": "Ohmee 门店排班打卡系统",
+  "short_name": "Ohmee",
+  "description": "便利店门店排班打卡、考勤管理、任务执行",
+  "start_url": "/mobile/login",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#e6232a",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "productivity"]
+}

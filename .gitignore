@@ -2,8 +2,8 @@
 node_modules/
 venv/
 
-# 构建产物
-dist/
+# 构建产物（dist/ 提交到仓库，供服务器直接使用，无需在服务器安装 Node.js）
+# dist/
 
 # Capacitor 原生平台（由 CI 自动生成，不提交）
 android/
