@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
 from backend.config import settings
-from backend.routers import auth, data, attendance
+from backend.routers import auth, data, attendance, version
 
 app = FastAPI(title="Ohmee 巡店系统 API", version="1.0.0")
 
@@ -24,6 +24,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/auth", tags=["认证"])
 app.include_router(data.router, prefix="/api", tags=["数据"])
 app.include_router(attendance.router, prefix="/api", tags=["打卡"])
+app.include_router(version.router, prefix="/api", tags=["版本"])
 
 
 @app.get("/api/health")

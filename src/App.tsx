@@ -5,6 +5,7 @@ import zhCN from 'antd/locale/zh_CN'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 
+import AppUpdateChecker from './components/AppUpdateChecker'
 import PCLayout from './components/pc/PCLayout'
 import MobileLayout from './components/mobile/MobileLayout'
 import PCLogin from './pages/pc/PCLogin'
@@ -137,6 +138,7 @@ export default function App() {
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <AppUpdateChecker />
       </BrowserRouter>
     </ConfigProvider>
   )
