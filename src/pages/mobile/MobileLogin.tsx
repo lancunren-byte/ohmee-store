@@ -126,15 +126,10 @@ export default function MobileLogin() {
           alt="store"
           style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
         />
-        {/* 半透明遮罩 */}
+        {/* 深色半透明遮罩 - 整体覆盖无渐变 */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'rgba(255,255,255,0.45)',
-        }} />
-        {/* 底部渐变过渡到白色 */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(to bottom, rgba(255,255,255,0) 40%, rgba(255,255,255,0.7) 80%, rgba(255,255,255,1) 100%)'
+          background: 'rgba(0,0,0,0.38)',
         }} />
 
         {/* 语言切换 - 右上角 */}
@@ -147,9 +142,9 @@ export default function MobileLogin() {
                 width: 34, height: 34, borderRadius: '50%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 12, fontWeight: 700, cursor: 'pointer',
-                background: activeLang === l.key ? '#e6232a' : 'rgba(255,255,255,0.92)',
+                background: activeLang === l.key ? '#e6232a' : 'rgba(255,255,255,0.88)',
                 color: activeLang === l.key ? '#fff' : '#444',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
               }}
             >
               {l.label}
@@ -157,21 +152,24 @@ export default function MobileLogin() {
           ))}
         </div>
 
-        {/* Logo + 标题 - 居中显示 */}
+        {/* Logo 居中 - 使用 screen 混合模式让黑色背景消融 */}
         <div style={{
           position: 'absolute', inset: 0,
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
-          paddingBottom: 16,
+          gap: 10,
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <img
-              src="/icons/icon.png" alt="logo"
-              style={{ width: 52, height: 52, borderRadius: '50%', boxShadow: '0 2px 10px rgba(0,0,0,0.15)' }}
-            />
-            <span style={{ fontSize: 34, fontWeight: 900, color: '#e6232a', letterSpacing: 0 }}>Ohmee</span>
+          <img
+            src="/images/ohmee-logo.png"
+            alt="Ohmee"
+            style={{
+              width: '72%', maxWidth: 280,
+              mixBlendMode: 'screen',
+            }}
+          />
+          <div style={{ fontSize: 17, color: 'rgba(255,255,255,0.92)', fontWeight: 600, letterSpacing: 2 }}>
+            门店管理系统
           </div>
-          <div style={{ fontSize: 16, color: '#333', marginTop: 6, fontWeight: 600 }}>门店管理系统</div>
         </div>
       </div>
 
