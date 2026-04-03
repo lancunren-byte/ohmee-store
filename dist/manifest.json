@@ -1,5 +1,5 @@
 {
-  "name": "Ohmee 门店排班打卡系统",
+  "name": "Ohmee",
   "short_name": "Ohmee",
   "description": "便利店门店排班打卡、考勤管理、任务执行",
   "start_url": "/mobile/login",
@@ -10,15 +10,15 @@
   "scope": "/",
   "icons": [
     {
-      "src": "/icons/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/vite.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any"
     }
   ],

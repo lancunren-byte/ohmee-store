@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'com.ohmee.store',
-  appName: 'Ohmee 巡店',
+  appName: 'Ohmee',
   webDir: 'dist',
   server: {
     androidScheme: 'https',
