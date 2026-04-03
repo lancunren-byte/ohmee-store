@@ -117,34 +117,34 @@ export default function MobileLogin() {
   const [activeLang, setActiveLang] = useState(localStorage.getItem('ohmee-lang') || 'zh')
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f0f2f5', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column' }}>
 
-      {/* 顶部门店背景图区域 */}
-      <div style={{ position: 'relative', height: '42vh', minHeight: 220, overflow: 'hidden' }}>
+      {/* 顶部：背景图全屏铺满上半部分 */}
+      <div style={{ position: 'relative', height: '48vh', minHeight: 260, overflow: 'hidden', flexShrink: 0 }}>
         <img
           src="/images/store-bg.png"
           alt="store"
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
         />
-        {/* 渐变遮罩 */}
+        {/* 底部渐变过渡到白色 */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 60%, rgba(240,242,245,1) 100%)'
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(255,255,255,0.6) 80%, rgba(255,255,255,1) 100%)'
         }} />
 
-        {/* 语言切换 */}
-        <div style={{ position: 'absolute', top: 16, right: 16, display: 'flex', gap: 6 }}>
+        {/* 语言切换 - 右上角 */}
+        <div style={{ position: 'absolute', top: 20, right: 16, display: 'flex', gap: 8, zIndex: 10 }}>
           {LANGS.map(l => (
             <div
               key={l.key}
               onClick={() => { setActiveLang(l.key); localStorage.setItem('ohmee-lang', l.key) }}
               style={{
-                width: 32, height: 32, borderRadius: '50%', display: 'flex',
-                alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700,
-                cursor: 'pointer',
-                background: activeLang === l.key ? '#e6232a' : 'rgba(255,255,255,0.85)',
-                color: activeLang === l.key ? '#fff' : '#333',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
+                width: 34, height: 34, borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                background: activeLang === l.key ? '#e6232a' : 'rgba(255,255,255,0.92)',
+                color: activeLang === l.key ? '#fff' : '#444',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
               }}
             >
               {l.label}
@@ -152,59 +152,71 @@ export default function MobileLogin() {
           ))}
         </div>
 
-        {/* Logo + 标题 */}
+        {/* Logo + 标题 - 左下角对齐设计稿 */}
         <div style={{
-          position: 'absolute', bottom: 24, left: 0, right: 0,
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          position: 'absolute', bottom: 20, left: 20,
+          display: 'flex', flexDirection: 'column',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <img src="/icons/icon.png" alt="logo" style={{ width: 44, height: 44, borderRadius: '50%', background: '#fff', padding: 2 }} />
-            <span style={{ fontSize: 28, fontWeight: 800, color: '#e6232a', letterSpacing: 1 }}>Ohmee</span>
+            <img
+              src="/icons/icon.png" alt="logo"
+              style={{ width: 48, height: 48, borderRadius: '50%', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
+            />
+            <span style={{ fontSize: 32, fontWeight: 900, color: '#e6232a', letterSpacing: 0 }}>Ohmee</span>
           </div>
-          <div style={{ fontSize: 15, color: '#555', marginTop: 4, fontWeight: 500 }}>门店管理系统</div>
+          <div style={{ fontSize: 16, color: '#333', marginTop: 4, fontWeight: 600, paddingLeft: 2 }}>门店管理系统</div>
         </div>
       </div>
 
-      {/* 登录表单卡片 */}
-      <div style={{ flex: 1, padding: '0 20px 32px', marginTop: 8 }}>
-        <div style={{ background: '#fff', borderRadius: 16, padding: '24px 20px', boxShadow: '0 4px 20px rgba(0,0,0,.08)' }}>
+      {/* 登录表单区 */}
+      <div style={{ flex: 1, padding: '4px 20px 32px' }}>
+        <div style={{ background: '#fff', borderRadius: 16, padding: '20px 16px', boxShadow: '0 2px 16px rgba(0,0,0,0.07)' }}>
+
           {/* 员工工号 */}
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 13, color: '#555', marginBottom: 6, fontWeight: 500 }}>员工工号</div>
+          <div style={{ marginBottom: 14 }}>
+            <div style={{ fontSize: 13, color: '#666', marginBottom: 6, fontWeight: 600 }}>员工工号</div>
             <div style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              border: '1px solid #e8e8e8', borderRadius: 10, padding: '10px 14px', background: '#fafafa'
+              display: 'flex', alignItems: 'center',
+              border: '1.5px solid #eee', borderRadius: 10,
+              padding: '0 14px', background: '#fafafa', height: 48,
             }}>
-              <span style={{ color: '#bbb', fontSize: 16 }}>👤</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ marginRight: 8, flexShrink: 0 }}>
+                <circle cx="12" cy="8" r="4" stroke="#aaa" strokeWidth="2"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#aaa" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
               <Input
                 placeholder="请输入工号，如 EMP003"
                 value={empNo}
                 onChange={setEmpNo}
-                style={{ '--font-size': '15px', flex: 1 }}
+                style={{ '--font-size': '15px', '--placeholder-color': '#ccc', flex: 1 }}
                 clearable
               />
             </div>
           </div>
 
           {/* 密码 */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 13, color: '#555', marginBottom: 6, fontWeight: 500 }}>密码</div>
+          <div style={{ marginBottom: 22 }}>
+            <div style={{ fontSize: 13, color: '#666', marginBottom: 6, fontWeight: 600 }}>密码</div>
             <div style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              border: '1px solid #e8e8e8', borderRadius: 10, padding: '10px 14px', background: '#fafafa'
+              display: 'flex', alignItems: 'center',
+              border: '1.5px solid #eee', borderRadius: 10,
+              padding: '0 14px', background: '#fafafa', height: 48,
             }}>
-              <span style={{ color: '#bbb', fontSize: 16 }}>🔒</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ marginRight: 8, flexShrink: 0 }}>
+                <rect x="5" y="11" width="14" height="10" rx="2" stroke="#aaa" strokeWidth="2"/>
+                <path d="M8 11V7a4 4 0 018 0v4" stroke="#aaa" strokeWidth="2"/>
+              </svg>
               <Input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="请输入密码"
                 value={password}
                 onChange={setPassword}
-                style={{ '--font-size': '15px', flex: 1 }}
+                style={{ '--font-size': '15px', '--placeholder-color': '#ccc', flex: 1 }}
                 clearable
               />
               <span
                 onClick={() => setShowPassword(!showPassword)}
-                style={{ color: '#bbb', fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                style={{ color: '#bbb', fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap', marginLeft: 4 }}
               >
                 {showPassword ? '隐藏' : '显示'}
               </span>
@@ -213,13 +225,19 @@ export default function MobileLogin() {
 
           <Button
             block color="primary" size="large"
-            style={{ borderRadius: 10, '--background-color': '#e6232a', '--border-radius': '10px', height: 48, fontSize: 17, fontWeight: 700 }}
+            style={{
+              borderRadius: 10,
+              '--background-color': '#e6232a',
+              '--border-color': '#e6232a',
+              '--border-radius': '10px',
+              height: 50, fontSize: 17, fontWeight: 700,
+            }}
             onClick={handleLogin}
             loading={loading}
           >
             登录
           </Button>
-          <div style={{ textAlign: 'center', fontSize: 12, color: '#aaa', marginTop: 14 }}>
+          <div style={{ textAlign: 'center', fontSize: 12, color: '#bbb', marginTop: 14 }}>
             初始密码为 ohmee2026，首次登录后需修改
           </div>
         </div>
