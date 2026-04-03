@@ -18,6 +18,7 @@ workflows:
         - ohmee_keystore        # 在 Codemagic 控制台 → Code signing → Android keystores 中上传
       vars:
         PACKAGE_NAME: com.ohmee.store
+        VITE_API_URL: https://ohmeesm.com
 
     cache:
       cache_paths:
@@ -86,6 +87,7 @@ workflows:
         BUNDLE_ID: com.ohmee.store
         XCODE_WORKSPACE: ios/App/App.xcworkspace
         XCODE_SCHEME: App
+        VITE_API_URL: https://ohmeesm.com
 
     cache:
       cache_paths:

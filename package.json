@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:app": "cross-env BUILD_TARGET=app tsc && cross-env BUILD_TARGET=app vite build",
+    "build:app": "cross-env BUILD_TARGET=app VITE_API_URL=https://ohmeesm.com tsc && cross-env BUILD_TARGET=app VITE_API_URL=https://ohmeesm.com vite build",
     "preview": "vite preview",
     "cap:sync": "npx cap sync",
     "cap:sync:android": "npx cap sync android",
