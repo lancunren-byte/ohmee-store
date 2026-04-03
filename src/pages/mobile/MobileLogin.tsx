@@ -126,10 +126,15 @@ export default function MobileLogin() {
           alt="store"
           style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
         />
+        {/* 半透明遮罩 */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'rgba(255,255,255,0.45)',
+        }} />
         {/* 底部渐变过渡到白色 */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(255,255,255,0.6) 80%, rgba(255,255,255,1) 100%)'
+          background: 'linear-gradient(to bottom, rgba(255,255,255,0) 40%, rgba(255,255,255,0.7) 80%, rgba(255,255,255,1) 100%)'
         }} />
 
         {/* 语言切换 - 右上角 */}
@@ -152,19 +157,21 @@ export default function MobileLogin() {
           ))}
         </div>
 
-        {/* Logo + 标题 - 左下角对齐设计稿 */}
+        {/* Logo + 标题 - 居中显示 */}
         <div style={{
-          position: 'absolute', bottom: 20, left: 20,
+          position: 'absolute', inset: 0,
           display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          paddingBottom: 16,
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <img
               src="/icons/icon.png" alt="logo"
-              style={{ width: 48, height: 48, borderRadius: '50%', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
+              style={{ width: 52, height: 52, borderRadius: '50%', boxShadow: '0 2px 10px rgba(0,0,0,0.15)' }}
             />
-            <span style={{ fontSize: 32, fontWeight: 900, color: '#e6232a', letterSpacing: 0 }}>Ohmee</span>
+            <span style={{ fontSize: 34, fontWeight: 900, color: '#e6232a', letterSpacing: 0 }}>Ohmee</span>
           </div>
-          <div style={{ fontSize: 16, color: '#333', marginTop: 4, fontWeight: 600, paddingLeft: 2 }}>门店管理系统</div>
+          <div style={{ fontSize: 16, color: '#333', marginTop: 6, fontWeight: 600 }}>门店管理系统</div>
         </div>
       </div>
 
