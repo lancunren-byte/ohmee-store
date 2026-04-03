@@ -41,6 +41,9 @@ workflows:
       - name: 同步 Web 资产到 Android 项目
         script: npx cap sync android
 
+      - name: 生成 Android 图标
+        script: npx @capacitor/assets generate --android
+
       - name: 构建签名 Release APK
         script: |
           cd android

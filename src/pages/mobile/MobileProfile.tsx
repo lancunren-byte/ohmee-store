@@ -9,6 +9,17 @@ import {
   subscribeToPush,
   unsubscribeFromPush,
 } from '../../utils/webPush'
+import { APP_VERSION, APP_BUILD } from '../../version'
+
+const API_BASE = import.meta.env.VITE_API_URL || ''
+
+interface ServerVersion {
+  version: string
+  build: number
+  force_update: boolean
+  apk_url: string
+  release_notes: string
+}
 
 const LANG_OPTIONS = [
   { key: 'zh', label: '中文' },
@@ -24,6 +35,9 @@ export default function MobileProfile() {
     () => getNotificationPermission() === 'granted' || !!localStorage.getItem('ohmee_push_subscription'),
   )
   const [pushSupported] = useState(isPushSupported)
+  const [checkingUpdate, setCheckingUpdate] = useState(false)
+  const [serverVersion, setServerVersion] = useState<ServerVersion | null>(null)
+  const [updateChecked, setUpdateChecked] = useState(false)
 
   if (!currentUser) {
     navigate('/mobile/login')
@@ -60,6 +74,38 @@ export default function MobileProfile() {
     localStorage.setItem('ohmee-lang', key)
     Toast.show({ content: '语言设置已保存', icon: 'success' })
   }
+
+  const handleCheckUpdate = async () => {
+    setCheckingUpdate(true)
+    try {
+      const res = await fetch(`${API_BASE}/api/app-version`)
+      if (!res.ok) throw new Error('请求失败')
+      const data: ServerVersion = await res.json()
+      setServerVersion(data)
+      setUpdateChecked(true)
+      const isNewer =
+        data.version.localeCompare(APP_VERSION, undefined, { numeric: true, sensitivity: 'base' }) > 0 ||
+        data.build > APP_BUILD
+      if (!isNewer) {
+        Toast.show({ content: '已是最新版本', icon: 'success' })
+      }
+    } catch {
+      Toast.show({ content: '检查失败，请检查网络', icon: 'fail' })
+    } finally {
+      setCheckingUpdate(false)
+    }
+  }
+
+  const handleUpdate = () => {
+    if (serverVersion?.apk_url) {
+      window.open(serverVersion.apk_url, '_system')
+    }
+  }
+
+  const hasNewVersion =
+    serverVersion &&
+    (serverVersion.version.localeCompare(APP_VERSION, undefined, { numeric: true, sensitivity: 'base' }) > 0 ||
+      serverVersion.build > APP_BUILD)
 
   const handleLogout = () => {
     logout()
@@ -195,6 +241,57 @@ export default function MobileProfile() {
               />
             ))}
           </List>
+        </div>
+
+        {/* 版本与更新 */}
+        <div style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', marginBottom: 16 }}>
+          <List header="关于应用">
+            <List.Item
+              title="当前版本"
+              extra={<span style={{ color: '#999', fontSize: 13 }}>v{APP_VERSION} (build {APP_BUILD})</span>}
+            />
+            {updateChecked && serverVersion && (
+              <List.Item
+                title="最新版本"
+                extra={
+                  <span style={{ color: hasNewVersion ? '#e6232a' : '#52c41a', fontSize: 13 }}>
+                    v{serverVersion.version}
+                    {hasNewVersion ? ' 有更新' : ' 已最新'}
+                  </span>
+                }
+              />
+            )}
+            {updateChecked && serverVersion?.release_notes && hasNewVersion && (
+              <List.Item
+                title="更新内容"
+                description={serverVersion.release_notes}
+              />
+            )}
+          </List>
+          <div style={{ padding: '8px 16px 16px', display: 'flex', gap: 8 }}>
+            <Button
+              block
+              color="primary"
+              fill="outline"
+              size="middle"
+              style={{ borderRadius: 8, '--border-color': '#e6232a', '--text-color': '#e6232a', flex: 1 }}
+              loading={checkingUpdate}
+              onClick={handleCheckUpdate}
+            >
+              检查更新
+            </Button>
+            {hasNewVersion && (
+              <Button
+                block
+                color="primary"
+                size="middle"
+                style={{ borderRadius: 8, '--background-color': '#e6232a', flex: 1 }}
+                onClick={handleUpdate}
+              >
+                立即更新
+              </Button>
+            )}
+          </div>
         </div>
 
         <Button
